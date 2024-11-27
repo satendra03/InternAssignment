@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import ProductGrid from "../components/ProductGrid";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -8,6 +9,23 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+
+  // Inject AdSense Script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src =
+      "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8361685811256075";
+    script.crossOrigin = "anonymous";
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup script when component unmounts
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  // Fetch Products
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch("https://fakestoreapi.com/products");
@@ -35,12 +53,31 @@ const Home = () => {
   return (
     <div>
       <header className="py-6 shadow-md flex items-center justify-between px-6">
-        <h1 className="text-3xl font-bold">ShopSmart</h1>
-      </header>
+    <h1 className="text-3xl font-bold">ShopSmart</h1>
+    <Link
+        to="/cart"
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+    >
+        Cart
+    </Link>
+</header>
 
       <main className="px-6 py-4">
         <SearchBar onSearch={handleSearch} />
         <ProductGrid products={paginatedProducts} />
+
+        {/* Google Ad Section */}
+        <div className="flex justify-center my-6">
+          <ins
+            className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client="ca-pub-8361685811256075"
+            data-ad-slot="YOUR_AD_SLOT_ID" // Replace with your ad slot ID
+            data-ad-format="auto"
+          ></ins>
+        </div>
+
+        
         <div className="flex justify-center mt-6 space-x-4">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
